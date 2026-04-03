@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>👦 BOYS VS GIRLS 👧</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bungee&family=Bungee+Inline&family=Nunito:wght@700;800;900&display=swap');
+
+:root {
+  --boy:#00d4ff; --girl:#ff3a8c;
+  --gold:#ffe44d; --panel:#09111b; --border:#1e2d40;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Nunito',sans-serif;color:#fff;display:flex;flex-direction:column;background:#09111b;}
+
+/* ── HEADER ── */
+#hdr{
+  height:36px;flex-shrink:0;
+  background:#06101a;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;padding:0 12px;
+}
+#hdr-title{font-family:'Bungee Inline',cursive;font-size:.9rem;white-space:nowrap;}
+.b{color:var(--boy);}.g{color:var(--girl);}
+.hstat{display:flex;align-items:center;gap:4px;background:#ffffff0a;border:1px solid var(--border);border-radius:20px;padding:1px 9px;font-size:.7rem;font-weight:800;}
+#live-pill{background:var(--girl);border-radius:20px;padding:1px 8px;font-size:.65rem;font-weight:900;letter-spacing:1px;opacity:0;visibility:hidden;transition:opacity .3s;}
+#live-pill.on{opacity:1;visibility:visible;animation:lp 1.2s infinite;}
+@keyframes lp{0%,100%{box-shadow:0 0 0 0 #ff3a8c44}60%{box-shadow:0 0 0 7px transparent}}
+#hdr-sp{flex:1;}
+.ndot{width:7px;height:7px;border-radius:50%;background:#333;flex-shrink:0;}
+.ndot.on{background:#00ff88;box-shadow:0 0 7px #00ff88;}
+#net-txt{font-size:.67rem;color:#4a6a8a;}
+
+/* ── MAIN ── */
+#main{flex:1;display:flex;overflow:hidden;min-height:0;}
+
+/* WIN BOARD */
+#wboard{width:110px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;}
+#wb-hd{padding:5px 8px;font-family:'Bungee',cursive;font-size:.7rem;color:var(--gold);text-align:center;border-bottom:1px solid var(--border);}
+#wb-list{flex:1;overflow-y:auto;padding:5px;}
+.wbr{display:flex;align-items:center;gap:4px;background:#ffffff07;border-radius:5px;padding:4px 5px;font-size:.7rem;font-weight:800;border-left:3px solid #333;margin-bottom:3px;}
+.wbr.boy{border-color:var(--boy);color:var(--boy);}.wbr.girl{border-color:var(--girl);color:var(--girl);}
+.wb-ct{margin-left:auto;font-size:.65rem;background:#ffffff12;border-radius:8px;padding:0 5px;color:var(--gold);}
+
+/* ── GAME AREA ── */
+#game{flex:1;display:flex;flex-direction:column;position:relative;overflow:hidden;min-width:0;}
+
+/* ─────────── ANIMATED SKY ─────────── */
+#sky{
+  flex:1;position:relative;overflow:hidden;
+}
+
+/* Animated gradient sky that slowly shifts */
+#sky-bg{
+  position:absolute;inset:0;
+  background: linear-gradient(180deg,
+    #2a0a4a 0%,
+    #0d1f6b 25%,
+    #1a4a8a 55%,
+    #2a7abf 80%,
+    #4a9fd4 100%
+  );
+  animation: skyShift 12s ease-in-out infinite alternate;
+  z-index:0;
+}
+@keyframes skyShift {
+  0%   { filter: hue-rotate(0deg) brightness(1); }
+  33%  { filter: hue-rotate(15deg) brightness(1.08); }
+  66%  { filter: hue-rotate(-10deg) brightness(0.95); }
+  100% { filter: hue-rotate(20deg) brightness(1.05); }
+}
+
+/* Aurora layer */
+#aurora{
+  position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden;
+}
+.aurora-band{
+  position:absolute;
+  border-radius:50%;
+  mix-blend-mode:screen;
+  animation:auroraPulse var(--dur,8s) ease-in-out var(--del,0s) infinite alternate;
+  opacity:0.35;
+  filter:blur(28px);
+}
+.ab1{
+  width:120%;height:180px;
+  top:-40px;left:-10%;
+  background:linear-gradient(90deg,#00d4ff88,#ff3a8c55,#ffe44d44,#00d4ff66);
+  --dur:7s;--del:0s;
+}
+.ab2{
+  width:100%;height:140px;
+  top:10px;left:5%;
+  background:linear-gradient(90deg,#ff3a8caa,#00d4ff44,#ff3a8c66);
+  --dur:9s;--del:2s;
+}
+.ab3{
+  width:90%;height:100px;
+  top:30px;left:8%;
+  background:linear-gradient(90deg,#ffe44d55,#00d4ff33,#ff3a8c44);
+  --dur:6s;--del:1.5s;
+}
+@keyframes auroraPulse{
+  0%  {transform:translateX(-5%) scaleY(0.7) skewX(-5deg);}
+  40% {transform:translateX(3%) scaleY(1.2) skewX(3deg);}
+  100%{transform:translateX(8%) scaleY(0.9) skewX(-2deg);}
+}
+
+/* Stars canvas */
+#stars-canvas{position:absolute;inset:0;z-index:2;pointer-events:none;}
+
+/* Floating particles */
+#particles{position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden;}
+.particle{
+  position:absolute;
+  border-radius:50%;
+  animation: floatUp var(--fd,6s) linear var(--fde,0s) infinite;
+  opacity:0;
+}
+@keyframes floatUp{
+  0%  {opacity:0;transform:translateY(0) scale(0.5);}
+  10% {opacity:0.7;}
+  90% {opacity:0.4;}
+  100%{opacity:0;transform:translateY(-280px) scale(1.2);}
+}
+
+/* Shooting stars */
+.shoot{
+  position:absolute;
+  height:2px;
+  border-radius:2px;
+  animation:shootAnim var(--sd,1.2s) linear var(--sde,0s) forwards;
+  opacity:0;
+  z-index:4;
+  pointer-events:none;
+}
+@keyframes shootAnim{
+  0%  {opacity:0;transform:translateX(0) translateY(0);}
+  5%  {opacity:1;}
+  80% {opacity:.8;}
+  100%{opacity:0;transform:translateX(-280px) translateY(140px);}
+}
+
+/* Pulsing light orbs */
+.orb{
+  position:absolute;border-radius:50%;
+  filter:blur(35px);
+  animation:orbPulse var(--od,5s) ease-in-out var(--ode,0s) infinite alternate;
+  pointer-events:none;z-index:2;
+}
+#orb-boy{
+  width:220px;height:220px;
+  left:-40px;bottom:30%;
+  background:radial-gradient(circle,#00d4ff55,transparent 70%);
+  --od:6s;--ode:0s;
+}
+#orb-girl{
+  width:200px;height:200px;
+  right:-30px;bottom:25%;
+  background:radial-gradient(circle,#ff3a8c55,transparent 70%);
+  --od:7s;--ode:1.5s;
+}
+@keyframes orbPulse{
+  0%  {opacity:.4;transform:scale(0.8);}
+  100%{opacity:.9;transform:scale(1.3);}
+}
+
+/* Animated ground glow */
+#ground-glow{
+  position:absolute;bottom:0;left:0;right:0;height:80px;
+  background:linear-gradient(0deg,#1a6a9a88,transparent);
+  z-index:5;pointer-events:none;
+  animation:groundPulse 3s ease-in-out infinite alternate;
+}
+@keyframes groundPulse{
+  0%  {opacity:.5;}
+  100%{opacity:1;}
+}
+
+/* Floating emoji confetti in background */
+#bg-emojis{position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden;}
+.bg-em{
+  position:absolute;font-size:1.1rem;
+  animation:bgEmFloat var(--ef,8s) linear var(--efd,0s) infinite;
+  opacity:0;
+}
+@keyframes bgEmFloat{
+  0%  {opacity:0;transform:translateY(40px) rotate(0deg) scale(0.6);}
+  10% {opacity:.35;}
+  85% {opacity:.25;}
+  100%{opacity:0;transform:translateY(-260px) rotate(360deg) scale(1);}
+}
+
+/* Heartbeat score ring on towers */
+.score-ring{
+  position:absolute;inset:-4px;border-radius:50%;
+  border:2px solid transparent;
+  animation:ringPop 2s ease-in-out infinite;
+  pointer-events:none;
+  z-index:10;
+}
+.boy-side .score-ring{border-color:#00d4ff44;}
+.girl-side .score-ring{border-color:#ff3a8c44;}
+@keyframes ringPop{
+  0%,100%{opacity:0;transform:scale(0.95);}
+  50%{opacity:1;transform:scale(1.05);}
+}
+
+/* GOAL + CHAT HINT */
+#goal-wrap{
+  position:absolute;top:7px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:5px;z-index:30;
+}
+#goal-bar{
+  background:#000000bb;border:2px solid var(--gold);border-radius:20px;
+  padding:3px 14px;font-family:'Bungee',cursive;font-size:.72rem;color:var(--gold);white-space:nowrap;
+  animation: goalGlow 2s ease-in-out infinite alternate;
+}
+@keyframes goalGlow{
+  0%  {box-shadow:0 0 8px #ffe44d44;}
+  100%{box-shadow:0 0 20px #ffe44daa, 0 0 40px #ffe44d33;}
+}
+#chat-hint{
+  background:#000000aa;border:1px solid #ffffff22;border-radius:14px;
+  padding:3px 14px;font-family:'Bungee',cursive;font-size:.65rem;
+  display:flex;gap:10px;align-items:center;white-space:nowrap;
+}
+#chat-hint .ch-b{color:var(--boy);}
+#chat-hint .ch-g{color:var(--girl);}
+#chat-hint .ch-sep{color:#ffffff33;}
+
+/* CAMERA BADGES */
+.cam{position:absolute;top:6px;z-index:25;background:#000000cc;border:2px solid #ffffff22;border-radius:8px;padding:3px 8px;font-size:.62rem;font-weight:900;display:flex;align-items:center;gap:5px;}
+#cam-boy{left:8px;border-color:#00d4ff44;color:var(--boy);}
+#cam-girl{right:8px;border-color:#ff3a8c44;color:var(--girl);}
+.cdot{width:6px;height:6px;border-radius:50%;animation:cd 1.4s infinite;}
+#cam-boy .cdot{background:var(--boy);}#cam-girl .cdot{background:var(--girl);}
+@keyframes cd{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* DIVIDER */
+#div{position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);width:3px;
+  background:linear-gradient(180deg,#ffe44d88,#ffe44d22,#ffe44d88);
+  animation:divPulse 2s ease-in-out infinite alternate;
+  z-index:20;pointer-events:none;}
+@keyframes divPulse{
+  0%  {box-shadow:0 0 4px #ffe44d44;}
+  100%{box-shadow:0 0 14px #ffe44daa, 0 0 28px #ffe44d33;}
+}
+#div::after{content:'VS';position:absolute;top:46%;transform:translate(-50%,0);left:50%;background:#000000ee;border:2px solid var(--gold);border-radius:7px;color:var(--gold);font-family:'Bungee Inline',cursive;font-size:.68rem;padding:2px 5px;
+  animation:vsWiggle 3s ease-in-out infinite;}
+@keyframes vsWiggle{
+  0%,100%{transform:translate(-50%,0) scale(1);}
+  50%{transform:translate(-50%,0) scale(1.12);}
+}
+
+/* ── TOWER LAYOUT ── */
+#tw{
+  position:absolute;inset:0;
+  display:flex;justify-content:space-around;align-items:flex-end;
+  padding:0 20px;pointer-events:none;
+  z-index:10;
+}
+.side{
+  display:flex;flex-direction:column;align-items:center;
+  width:200px;position:relative;height:100%;
+  justify-content:flex-end;
+}
+.wbadge{
+  position:absolute;top:8px;
+  background:#000000cc;border:2px solid #ffffff22;border-radius:10px;
+  padding:4px 14px;font-family:'Bungee',cursive;font-size:.88rem;
+  display:flex;align-items:center;gap:7px;z-index:10;pointer-events:all;
+}
+.boy-side .wbadge{border-color:#00d4ff55;}
+.girl-side .wbadge{border-color:#ff3a8c55;}
+.wbadge-num{font-size:1.4rem;color:#fff;}
+
+/* TOWER VIEWPORT */
+.tower-viewport{
+  width:150px;
+  height:calc(100% - 64px);
+  overflow:hidden;
+  position:relative;
+}
+.tower-world{
+  position:absolute;
+  bottom:0; left:0; right:0;
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  transition: transform 0.2s cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* CHARACTER */
+.char-wrap{
+  display:flex;justify-content:center;
+  flex-shrink:0;position:relative;z-index:15;
+  padding-bottom:2px;
+}
+.char-emoji{
+  font-size:2.6rem;
+  filter:drop-shadow(0 6px 16px #0007);
+  animation:cstand .75s ease-in-out infinite alternate;
+  transform-origin:bottom center;display:block;
+}
+@keyframes cstand{from{transform:translateY(0)}to{transform:translateY(-5px)}}
+@keyframes cjump{
+  0%  {transform:translateY(0)scaleX(1.05)scaleY(.9)}
+  15% {transform:translateY(-38px)scaleX(.9)scaleY(1.1)rotate(-6deg)}
+  45% {transform:translateY(-56px)scaleX(.88)scaleY(1.15)rotate(5deg)}
+  75% {transform:translateY(-20px)scaleX(1.02)scaleY(.95)}
+  100%{transform:translateY(0)scaleX(1)scaleY(1)}
+}
+.char-emoji.jumping{animation:cjump .55s ease !important;}
+
+/* BLOCK */
+.block{
+  height:24px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bungee',cursive;font-size:.68rem;
+  color:rgba(255,255,255,.85);
+  position:relative;
+  animation:bslam .15s cubic-bezier(.2,0,.1,1);
+}
+@keyframes bslam{from{transform:scaleX(.3)scaleY(.2);opacity:0}to{transform:none;opacity:1}}
+
+.boy-side .block:nth-child(odd){ background:linear-gradient(180deg,#00c8ee,#0099bb);border-top:2px solid #00eeff88;border-bottom:1px solid #006688;}
+.boy-side .block:nth-child(even){background:linear-gradient(180deg,#00aacc,#007a99);border-top:2px solid #00ccee88;border-bottom:1px solid #005577;}
+.boy-side .block::after{content:'';position:absolute;right:-6px;top:0;bottom:0;width:6px;background:linear-gradient(180deg,#005566,#003344);clip-path:polygon(0 0,100% 6px,100% 100%,0 100%);}
+.boy-side .block::before{content:'';position:absolute;top:-5px;left:0;right:-6px;height:5px;background:linear-gradient(90deg,#00eeff,#00ccdd);clip-path:polygon(0 100%,6px 0,100% 0,100% 100%);}
+
+.girl-side .block:nth-child(odd){ background:linear-gradient(180deg,#ff3080,#cc0058);border-top:2px solid #ff88bb88;border-bottom:1px solid #880040;}
+.girl-side .block:nth-child(even){background:linear-gradient(180deg,#ee1060,#bb0046);border-top:2px solid #ff60aa88;border-bottom:1px solid #770033;}
+.girl-side .block::after{content:'';position:absolute;right:-6px;top:0;bottom:0;width:6px;background:linear-gradient(180deg,#770030,#440018);clip-path:polygon(0 0,100% 6px,100% 100%,0 100%);}
+.girl-side .block::before{content:'';position:absolute;top:-5px;left:0;right:-6px;height:5px;background:linear-gradient(90deg,#ff80bb,#ff4490);clip-path:polygon(0 100%,6px 0,100% 0,100% 100%);}
+
+@keyframes bremove{from{transform:none;opacity:1}to{transform:scaleX(.2)scaleY(.1);opacity:0}}
+.block.removing{animation:bremove .2s ease forwards !important;}
+
+/* WATER */
+#water{height:58px;flex-shrink:0;background:linear-gradient(180deg,#1a6a9a,#0d4d77);position:relative;overflow:hidden;}
+#water::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,
+    rgba(0,212,255,.15) 0%,
+    rgba(255,58,140,.1) 50%,
+    rgba(0,212,255,.15) 100%);
+  animation:waterShimmer 4s ease-in-out infinite alternate;
+}
+@keyframes waterShimmer{
+  0%  {transform:translateX(-5%);}
+  100%{transform:translateX(5%);}
+}
+#water::after{content:'';position:absolute;top:0;left:0;right:0;height:12px;background:repeating-linear-gradient(90deg,#1a8acc 0,#1a8acc 28px,#1a6a9a 28px,#1a6a9a 56px);animation:wv 1.8s linear infinite;}
+@keyframes wv{from{transform:translateX(0)}to{transform:translateX(-56px)}}
+
+/* SURGE */
+#surge{position:absolute;top:9%;left:50%;transform:translateX(-50%);font-family:'Bungee Inline',cursive;font-size:1.1rem;padding:4px 20px;border-radius:20px;pointer-events:none;opacity:0;transition:opacity .25s;z-index:50;white-space:nowrap;text-shadow:0 2px 6px #0008;}
+#surge.show{opacity:1;}
+#surge.bs{background:linear-gradient(90deg,#006699,#00d4ff);}
+#surge.gs{background:linear-gradient(90deg,#aa0044,#ff3a8c);}
+#surge.sab{background:linear-gradient(90deg,#664400,#ff8800);}
+.side.sabotaged{animation:sabFlash .4s ease;}
+@keyframes sabFlash{0%{filter:brightness(1)}30%{filter:brightness(2.5)saturate(0)}100%{filter:brightness(1)}}
+
+/* FX */
+.fxn{position:absolute;pointer-events:none;z-index:60;font-family:'Bungee',cursive;font-size:1.2rem;font-weight:900;animation:fup .8s ease forwards;text-shadow:0 2px 8px #0009;}
+@keyframes fup{0%{opacity:1;transform:translateY(0)scale(1)}100%{opacity:0;transform:translateY(-60px)scale(1.4)}}
+
+/* WINNER OVERLAY */
+#win-ov{display:none;position:absolute;inset:0;z-index:200;background:#000000cc;backdrop-filter:blur(12px);align-items:center;justify-content:center;flex-direction:column;gap:14px;}
+#win-ov.show{display:flex;}
+#win-box{border-radius:18px;padding:22px 44px;text-align:center;animation:wp .5s cubic-bezier(.2,0,.1,1);position:relative;overflow:hidden;min-width:260px;}
+#win-box.bw{background:linear-gradient(145deg,#003355,#005577);border:3px solid var(--boy);}
+#win-box.gw{background:linear-gradient(145deg,#440022,#880044);border:3px solid var(--girl);}
+@keyframes wp{from{transform:scale(.35)rotate(-7deg);opacity:0}to{transform:none;opacity:1}}
+.wsp{position:absolute;inset:-40%;animation:ws 4s linear infinite;opacity:.08;}
+@keyframes ws{to{transform:rotate(360deg)}}
+.wc{font-size:3.5rem;display:block;animation:wd .5s ease-in-out infinite alternate;}
+@keyframes wd{from{transform:rotate(-14deg)translateY(-6px)scale(1.05)}to{transform:rotate(14deg)translateY(6px)scale(.96)}}
+.wlbl{font-family:'Bungee',cursive;font-size:.6rem;letter-spacing:3px;opacity:.5;margin:4px 0;}
+.wteam{font-family:'Bungee Inline',cursive;font-size:2rem;}
+.wstat{font-size:.68rem;opacity:.55;margin-top:3px;}
+.conf{position:absolute;pointer-events:none;z-index:210;animation:cf var(--s,1.6s) linear var(--d,0s) forwards;border-radius:2px;}
+@keyframes cf{0%{transform:translateY(-30px)rotate(0);opacity:1}100%{transform:translateY(95vh)rotate(800deg);opacity:0}}
+#replay-btn{background:linear-gradient(90deg,var(--boy),var(--girl));border:none;border-radius:12px;color:#fff;font-family:'Bungee',cursive;font-size:.9rem;letter-spacing:1px;padding:10px 30px;cursor:pointer;transition:.2s;position:relative;z-index:220;}
+#replay-btn:hover{transform:scale(1.06);opacity:.9;}
+
+/* BOOST BAR */
+#bbar{
+  height:72px;flex-shrink:0;background:#06101a;border-top:1px solid var(--border);
+  display:grid;grid-template-columns:1fr 1fr 1fr 1fr;
+}
+.tbtn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  cursor:pointer;transition:.12s;background:transparent;border:none;color:#fff;
+  font-family:'Nunito',sans-serif;border-right:1px solid var(--border);
+}
+.tbtn:last-child{border-right:none;}
+.tbtn:hover{background:#ffffff08;}.tbtn:active{transform:scale(.97);}
+.tbtn.fb{background:#00d4ff18!important;}.tbtn.fg{background:#ff3a8c18!important;}
+.tbtn.fsab{background:#ff880022!important;}
+.tb-ico{font-size:1.3rem;}
+.tb-nm{font-family:'Bungee',cursive;font-size:.68rem;line-height:1.3;}
+.tb-sb{font-size:.53rem;opacity:.45;}
+.boy-btn .tb-nm{color:var(--boy);}
+.girl-btn .tb-nm{color:var(--girl);}
+.rosa-btn .tb-nm{color:#ff88cc;}
+.necklace-btn .tb-nm{color:#aaddff;}
+
+/* RIGHT PANEL */
+#rp{width:210px;flex-shrink:0;background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;}
+#fhd{padding:5px 8px;font-family:'Bungee',cursive;font-size:.67rem;color:#4a6a8a;border-bottom:1px solid var(--border);flex-shrink:0;}
+#feed{flex:1;overflow-y:auto;padding:3px 5px;display:flex;flex-direction:column;gap:2px;}
+#feed::-webkit-scrollbar{width:2px;}#feed::-webkit-scrollbar-thumb{background:#1e2d40;}
+.fev{font-size:.62rem;background:#ffffff06;border-radius:4px;padding:2px 6px;border-left:3px solid transparent;display:flex;align-items:center;gap:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;animation:fi .18s ease;}
+.fev.boy{border-color:var(--boy);}.fev.girl{border-color:var(--girl);}.fev.sab{border-color:#ff8800;}
+@keyframes fi{from{opacity:0;transform:translateX(4px)}to{opacity:1;transform:none}}
+.fev-u{font-weight:900;color:#fff;}
+.ftag{font-size:.58rem;border-radius:8px;padding:0 4px;margin-left:2px;}
+.ftag.boy{background:#00d4ff22;color:var(--boy);}.ftag.girl{background:#ff3a8c22;color:var(--girl);}.ftag.sab{background:#ff880022;color:#ff8800;}
+#conn{padding:7px;border-top:1px solid var(--border);flex-shrink:0;}
+#conn label{font-size:.58rem;color:#4a6a8a;display:block;margin-bottom:2px;}
+#conn input{width:100%;background:#ffffff08;border:1px solid var(--border);border-radius:4px;color:#fff;font-family:'Nunito',sans-serif;font-size:.75rem;padding:4px 7px;outline:none;margin-bottom:4px;}
+#conn input:focus{border-color:var(--girl);}
+#conn-btn{width:100%;background:linear-gradient(90deg,#003355,#550030);border:1px solid var(--border);border-radius:7px;color:#fff;font-family:'Bungee',cursive;font-size:.85rem;padding:6px;cursor:pointer;transition:.18s;}
+#conn-btn:hover{opacity:.88;}
+#conn-btn.on{background:linear-gradient(90deg,#003d1f,#006633);color:#00ff88;border-color:#00ff8844;}
+#conn-btn:disabled{opacity:.5;cursor:not-allowed;}
+</style>
+</head>
+<body>
+
+<div id="hdr">
+  <div id="hdr-title"><span class="b">👦 BOYS</span> &nbsp;VS&nbsp; <span class="g">GIRLS 👧</span></div>
+  <div class="hstat">👥 <span id="sv">0</span></div>
+  <div class="hstat">🏁 <span id="sr">0</span></div>
+  <div id="live-pill">● LIVE</div>
+  <div id="hdr-sp"></div>
+  <div class="ndot" id="ndot"></div>
+  <span id="net-txt">OFFLINE</span>
+</div>
+
+<div id="main">
+  <div id="wboard">
+    <div id="wb-hd">🏆 WINS</div>
+    <div id="wb-list"><div style="color:#4a6a8a;font-size:.6rem;padding:8px;text-align:center;line-height:1.7;">No wins<br>yet!</div></div>
+  </div>
+
+  <div id="game">
+    <div id="sky">
+      <!-- Animated background layers -->
+      <div id="sky-bg"></div>
+      <div id="aurora">
+        <div class="aurora-band ab1"></div>
+        <div class="aurora-band ab2"></div>
+        <div class="aurora-band ab3"></div>
+      </div>
+      <canvas id="stars-canvas"></canvas>
+      <div id="particles"></div>
+      <div id="bg-emojis"></div>
+      <div class="orb" id="orb-boy"></div>
+      <div class="orb" id="orb-girl"></div>
+      <div id="ground-glow"></div>
+
+      <div id="goal-wrap">
+        <div id="goal-bar">🎯 GOAL: <span id="gv">200</span></div>
+        <div id="chat-hint">
+          <span class="ch-b">💬 B = BOYS</span>
+          <span class="ch-sep">|</span>
+          <span class="ch-g">G = GIRLS</span>
+        </div>
+      </div>
+
+      <div id="surge"></div>
+      <div id="div"></div>
+      <div class="cam" id="cam-boy"><div class="cdot"></div>📹 BOYS CAM</div>
+      <div class="cam" id="cam-girl">GIRLS CAM 📹<div class="cdot"></div></div>
+
+      <div id="tw">
+        <!-- BOY SIDE -->
+        <div class="side boy-side" id="bside">
+          <div class="wbadge"><span>👦 WINS</span><span class="wbadge-num" id="bwn">0</span></div>
+          <div class="tower-viewport" id="bvp">
+            <div class="tower-world" id="bworld">
+              <div class="char-wrap"><span class="char-emoji" id="bchar">🧑</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GIRL SIDE -->
+        <div class="side girl-side" id="gside">
+          <div class="wbadge"><span>👧 WINS</span><span class="wbadge-num" id="gwn">0</span></div>
+          <div class="tower-viewport" id="gvp">
+            <div class="tower-world" id="gworld">
+              <div class="char-wrap"><span class="char-emoji" id="gchar">👧</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="win-ov">
+        <div id="win-box">
+          <div class="wsp" id="wsp"></div>
+          <span class="wc" id="wch">🏆</span>
+          <div class="wlbl">🏆 WINNER 🏆</div>
+          <div class="wteam" id="wtm">—</div>
+          <div class="wstat" id="wst"></div>
+        </div>
+        <button id="replay-btn" onclick="startNew()">⚡ PLAY AGAIN!</button>
+      </div>
+    </div>
+
+    <div id="water"></div>
+
+    <div id="bbar">
+      <button class="tbtn boy-btn" onclick="manualAdd('boy',2)">
+        <span class="tb-ico">🔥</span>
+        <div><div class="tb-nm">FIRE → BOYS +2</div><div class="tb-sb">ID:5583 · 1 coin</div></div>
+      </button>
+      <button class="tbtn girl-btn" onclick="manualAdd('girl',2)">
+        <span class="tb-ico">🌹</span>
+        <div><div class="tb-nm">ROSE → GIRLS +2</div><div class="tb-sb">ID:5655 · 1 coin</div></div>
+      </button>
+      <button class="tbtn rosa-btn" onclick="manualSab('girl',5)">
+        <span class="tb-ico">🌸</span>
+        <div><div class="tb-nm">ROSA → -5 GIRLS</div><div class="tb-sb">ID:8913 · 10 coins · sabotage!</div></div>
+      </button>
+      <button class="tbtn necklace-btn" onclick="manualSab('boy',5)">
+        <span class="tb-ico">📿</span>
+        <div><div class="tb-nm">NECKLACE → -5 BOYS</div><div class="tb-sb">ID:9947 · 10 coins · sabotage!</div></div>
+      </button>
+    </div>
+  </div>
+
+  <div id="rp">
+    <div id="fhd">📡 LIVE FEED</div>
+    <div id="feed"></div>
+    <div id="conn">
+      <label>TIKTOK USERNAME</label>
+      <input id="ttUser" type="text" value="wee_design0" placeholder="@username"/>
+      <button id="conn-btn" onclick="toggleConnect()">▶ GO LIVE</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────────────────────
+const GOAL           = 200;
+const GIFT_BOY_ADD   = 5583;
+const GIFT_GIRL_ADD  = 5655;
+const GIFT_SAB_GIRLS = 8913;
+const GIFT_SAB_BOYS  = 9947;
+
+const S = {
+  boy:  { score: 0, blocks: 0 },
+  girl: { score: 0, blocks: 0 },
+};
+const wins = { boy: 0, girl: 0 };
+let gameOver = false, totalViewers = 0, totalRaces = 0;
+let connected = false, ws = null, autoTimer = null, surgeTimer = null;
+
+// ─── BACKGROUND ANIMATIONS ────────────────────────────────────────────────
+
+// Stars canvas
+(function initStars() {
+  const canvas = document.getElementById('stars-canvas');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  let W, H;
+
+  function resize() {
+    W = canvas.width  = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+    stars = [];
+    for (let i = 0; i < 90; i++) {
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H * 0.7,
+        r: Math.random() * 1.5 + 0.3,
+        a: Math.random(),
+        da: (Math.random() * 0.008 + 0.002) * (Math.random() < .5 ? 1 : -1),
+        col: Math.random() < .3 ? '#00d4ff' : Math.random() < .5 ? '#ff3a8c' : '#ffffff',
+      });
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    stars.forEach(s => {
+      s.a += s.da;
+      if (s.a <= 0 || s.a >= 1) s.da *= -1;
+      ctx.save();
+      ctx.globalAlpha = s.a * 0.8;
+      ctx.fillStyle = s.col;
+      ctx.shadowColor = s.col;
+      ctx.shadowBlur = s.r * 4;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    });
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  draw();
+  window.addEventListener('resize', resize);
+})();
+
+// Floating particles
+(function initParticles() {
+  const c = document.getElementById('particles');
+  const boyColors   = ['#00d4ff','#80eeff','#00ffcc'];
+  const girlColors  = ['#ff3a8c','#ff88cc','#ff5599'];
+  const neutrals    = ['#ffe44d','#ffffff'];
+  const all = [...boyColors, ...girlColors, ...neutrals];
+
+  function spawnParticle() {
+    const el = document.createElement('div');
+    el.className = 'particle';
+    const size = 3 + Math.random() * 7;
+    const col  = all[Math.floor(Math.random() * all.length)];
+    el.style.cssText = [
+      `left:${5 + Math.random() * 90}%`,
+      `bottom:${-5 + Math.random() * 30}%`,
+      `width:${size}px`,
+      `height:${size}px`,
+      `background:${col}`,
+      `box-shadow:0 0 ${size*2}px ${col}`,
+      `--fd:${4 + Math.random() * 6}s`,
+      `--fde:${Math.random() * 4}s`,
+    ].join(';');
+    c.appendChild(el);
+    setTimeout(() => el.remove(), (parseFloat(el.style.getPropertyValue('--fd')||'6')+5)*1000);
+  }
+
+  for (let i = 0; i < 18; i++) setTimeout(spawnParticle, i * 400);
+  setInterval(spawnParticle, 700);
+})();
+
+// Shooting stars
+(function initShootingStars() {
+  const sky = document.getElementById('sky');
+
+  function spawnShoot() {
+    const el = document.createElement('div');
+    el.className = 'shoot';
+    const startX = 20 + Math.random() * 70;
+    const startY = 2  + Math.random() * 30;
+    const len    = 60 + Math.random() * 100;
+    const isBlue = Math.random() < .5;
+    el.style.cssText = [
+      `left:${startX}%`,
+      `top:${startY}%`,
+      `width:${len}px`,
+      `background:linear-gradient(90deg,transparent,${isBlue ? '#00d4ff' : '#ff3a8c'},white)`,
+      `--sd:${0.8 + Math.random() * 0.8}s`,
+      `--sde:0s`,
+    ].join(';');
+    sky.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+
+  function scheduleShoot() {
+    spawnShoot();
+    setTimeout(scheduleShoot, 2200 + Math.random() * 4000);
+  }
+  setTimeout(scheduleShoot, 1500);
+})();
+
+// Floating background emojis
+(function initBgEmojis() {
+  const c = document.getElementById('bg-emojis');
+  const em = ['🔥','💙','💗','⭐','✨','💫','🌟','💎','👑','🌊','💥','🎯'];
+
+  function spawnEm() {
+    const el = document.createElement('div');
+    el.className = 'bg-em';
+    el.textContent = em[Math.floor(Math.random() * em.length)];
+    el.style.cssText = [
+      `left:${5 + Math.random() * 88}%`,
+      `bottom:0px`,
+      `--ef:${6 + Math.random() * 6}s`,
+      `--efd:${Math.random() * 3}s`,
+    ].join(';');
+    c.appendChild(el);
+    setTimeout(() => el.remove(), 15000);
+  }
+
+  for (let i = 0; i < 8; i++) setTimeout(spawnEm, i * 600);
+  setInterval(spawnEm, 1200);
+})();
+
+// ─── TOWER CORE ───────────────────────────────────────────────────────────
+function world(t)    { return document.getElementById(t[0] + 'world'); }
+function viewport(t) { return document.getElementById(t[0] + 'vp'); }
+
+function syncCamera(t) {
+  const vp = viewport(t), w = world(t);
+  const diff = Math.max(0, w.scrollHeight - vp.clientHeight);
+  w.style.transform = `translateY(${diff}px)`;
+}
+
+function renumber(w) {
+  const blocks = w.querySelectorAll('.block');
+  const n = blocks.length;
+  blocks.forEach((b, i) => { b.textContent = n - i; });
+}
+
+function addBlocks(t, count) {
+  if (count <= 0) return;
+  const w    = world(t);
+  const char = w.querySelector('.char-wrap');
+  for (let i = 0; i < count; i++) {
+    const b = document.createElement('div');
+    b.className = 'block';
+    char.insertAdjacentElement('afterend', b);
+  }
+  renumber(w);
+  syncCamera(t);
+  jump(t[0] + 'char');
+}
+
+function removeBlocks(t, count) {
+  if (count <= 0) return;
+  const w      = world(t);
+  const char   = w.querySelector('.char-wrap');
+  let node = char.nextSibling, removed = 0;
+  const victims = [];
+  while (node && removed < count) {
+    if (node.classList?.contains('block')) { victims.push(node); removed++; }
+    node = node.nextSibling;
+  }
+  victims.forEach(b => {
+    b.classList.add('removing');
+    setTimeout(el => el.parentNode?.removeChild(el), 220, b);
+  });
+  setTimeout(() => { renumber(w); syncCamera(t); }, 230);
+}
+
+function jump(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('jumping');
+  void el.offsetWidth;
+  el.classList.add('jumping');
+}
+
+// ─── SCORE LOGIC ──────────────────────────────────────────────────────────
+function applyAdd(t, amount, user) {
+  if (gameOver) return;
+  S[t].score += amount;
+  const want = Math.floor(S[t].score);
+  const delta = want - S[t].blocks;
+  if (delta > 0) {
+    S[t].blocks = want;
+    addBlocks(t, delta);
+  }
+  if (amount >= 1 || Math.random() < 0.2) {
+    fx(t, '+' + (Number.isInteger(amount) ? amount : amount.toFixed(1)), '#00ff88');
+  }
+  feed(user, t, 'add', amount);
+  const opp = t === 'boy' ? 'girl' : 'boy';
+  if (S[t].score - S[opp].score > 20 && Math.random() < .18) surge(t, 'lead');
+  if (S[t].score >= GOAL) win(t);
+}
+
+function applySab(t, amount, user) {
+  if (gameOver) return;
+  const before = S[t].score;
+  S[t].score = Math.max(0, S[t].score - amount);
+  const want  = Math.floor(S[t].score);
+  const delta = S[t].blocks - want;
+  if (delta > 0) { S[t].blocks = want; removeBlocks(t, delta); }
+  const lost = Math.round(before - S[t].score);
+  fx(t, '-' + lost, '#ff8800');
+  feed(user, t, 'sab', -lost);
+  surge(t, 'sab');
+  const el = document.getElementById(t === 'boy' ? 'bside' : 'gside');
+  el.classList.add('sabotaged');
+  setTimeout(() => el.classList.remove('sabotaged'), 500);
+}
+
+function manualAdd(t, n) { applyAdd(t, n, 'you'); }
+function manualSab(t, n) { applySab(t, n, 'you'); }
+
+// ─── FX ───────────────────────────────────────────────────────────────────
+function fx(t, lbl, color) {
+  const side = document.getElementById(t === 'boy' ? 'bside' : 'gside');
+  const game = document.getElementById('game');
+  const sr = side.getBoundingClientRect(), gr = game.getBoundingClientRect();
+  const el = document.createElement('div');
+  el.className = 'fxn';
+  el.textContent = lbl;
+  el.style.cssText = `left:${sr.left-gr.left+sr.width/2-16}px;top:${sr.top-gr.top+40}px;color:${color};`;
+  game.appendChild(el);
+  setTimeout(() => el.remove(), 900);
+}
+
+function surge(t, mode) {
+  const b = document.getElementById('surge');
+  b.className = 'show ' + (mode === 'sab' ? 'sab' : t === 'boy' ? 'bs' : 'gs');
+  b.textContent = mode === 'sab'
+    ? (t === 'boy' ? '💥 GIRLS SABOTAGE BOYS! -5' : '💥 BOYS SABOTAGE GIRLS! -5')
+    : (t === 'boy' ? '💪 BOYS PULLING AHEAD!' : '💅 GIRLS ON FIRE!');
+  clearTimeout(surgeTimer);
+  surgeTimer = setTimeout(() => b.classList.remove('show'), 2200);
+}
+
+function feed(user, t, type, amount) {
+  const f = document.getElementById('feed');
+  const isSab = type === 'sab';
+  const d = document.createElement('div');
+  d.className = 'fev ' + (isSab ? 'sab' : t);
+  const ico = isSab ? '💥' : (t === 'boy' ? '🔥' : '🌹');
+  d.innerHTML = `<span class="fev-u">${user}</span>`
+    + `<span class="ftag ${isSab ? 'sab' : t}">${ico} ${isSab ? amount : '+' + amount}</span>`;
+  f.prepend(d);
+  while (f.children.length > 30) f.removeChild(f.lastChild);
+}
+
+// ─── WIN ──────────────────────────────────────────────────────────────────
+function win(t) {
+  gameOver = true; wins[t]++; totalRaces++;
+  document.getElementById(t === 'boy' ? 'bwn' : 'gwn').textContent = wins[t];
+  document.getElementById('sr').textContent = totalRaces;
+  updateWinBoard(); confetti(t);
+  setTimeout(() => {
+    const col = t === 'boy' ? '#00d4ff' : '#ff3a8c';
+    const box = document.getElementById('win-box');
+    box.className = t === 'boy' ? 'bw' : 'gw';
+    document.getElementById('wsp').style.background =
+      `conic-gradient(from 0deg,transparent,${col} 8%,transparent 16%)`;
+    document.getElementById('wch').textContent = t === 'boy' ? '🧑' : '👧';
+    document.getElementById('wtm').textContent = t === 'boy' ? 'BOYS WIN! 🏆' : 'GIRLS WIN! 🏆';
+    document.getElementById('wtm').style.color  = col;
+    document.getElementById('wst').textContent  = `${Math.floor(S[t].score)} blocks · Round ${totalRaces}`;
+    document.getElementById('win-ov').classList.add('show');
+    document.getElementById(t === 'boy' ? 'bchar' : 'gchar').style.animation =
+      'wd .35s ease-in-out infinite alternate';
+    let c = 5;
+    const btn = document.getElementById('replay-btn');
+    btn.textContent = `⚡ NEXT ROUND IN ${c}...`;
+    autoTimer = setInterval(() => {
+      c--;
+      if (c <= 0) { clearInterval(autoTimer); startNew(); }
+      else btn.textContent = `⚡ NEXT ROUND IN ${c}...`;
+    }, 1000);
+  }, 1300);
+}
+
+function confetti(t) {
+  const cols = t === 'boy'
+    ? ['#00d4ff','#80eeff','#fff','#0088cc','#00ffee']
+    : ['#ff3a8c','#ff90c8','#fff','#cc0060','#ff8844'];
+  const ov = document.getElementById('win-ov');
+  for (let i = 0; i < 70; i++) {
+    const c = document.createElement('div'); c.className = 'conf';
+    const w = 5+Math.random()*10, h = 5+Math.random()*10;
+    c.style.cssText = `left:${Math.random()*100}%;top:0;width:${w}px;height:${h}px;`
+      + `background:${cols[Math.floor(Math.random()*cols.length)]};`
+      + `border-radius:${Math.random()>.5?'50%':'2px'};`
+      + `--s:${1.2+Math.random()*2}s;--d:${Math.random()*1.8}s;`;
+    ov.appendChild(c);
+    setTimeout(() => c.remove(), 5000);
+  }
+}
+
+function startNew() {
+  clearInterval(autoTimer);
+  S.boy  = { score: 0, blocks: 0 };
+  S.girl = { score: 0, blocks: 0 };
+  gameOver = false;
+  document.getElementById('win-ov').classList.remove('show');
+  document.getElementById('bchar').style.animation = '';
+  document.getElementById('gchar').style.animation = '';
+  document.getElementById('surge').className = '';
+  ['bworld','gworld'].forEach(id => {
+    const w = document.getElementById(id);
+    w.querySelectorAll('.block').forEach(b => b.remove());
+    w.style.transform = '';
+  });
+}
+
+function updateWinBoard() {
+  const list = document.getElementById('wb-list');
+  list.innerHTML = '';
+  const ts = [{t:'boy',l:'Boys',i:'🧑'},{t:'girl',l:'Girls',i:'👧'}];
+  ts.sort((a, b) => wins[b.t] - wins[a.t]);
+  let any = false;
+  ts.forEach(({ t, l, i }) => {
+    if (!wins[t]) return; any = true;
+    const d = document.createElement('div');
+    d.className = 'wbr ' + t;
+    d.innerHTML = `<span>${i}</span><span>${l}</span><span class="wb-ct">${wins[t]}</span>`;
+    list.appendChild(d);
+  });
+  if (!any) list.innerHTML =
+    '<div style="color:#4a6a8a;font-size:.6rem;padding:8px;text-align:center;line-height:1.7;">No wins<br>yet!</div>';
+}
+
+// ─── TIKTOK WS ────────────────────────────────────────────────────────────
+function parseChatTeam(msg) {
+  const m = msg.trim().toUpperCase().replace(/^[\/\s]+/, '');
+  if (['B','BOY','BOYS'].includes(m))  return 'boy';
+  if (['G','GIRL','GIRLS'].includes(m)) return 'girl';
+  return null;
+}
+
+function showConnErr(msg) {
+  connected = false;
+  const btn = document.getElementById('conn-btn');
+  btn.textContent = '▶ GO LIVE'; btn.classList.remove('on'); btn.disabled = false;
+  document.getElementById('ndot').classList.remove('on');
+  document.getElementById('net-txt').textContent = 'OFFLINE';
+  document.getElementById('live-pill').classList.remove('on');
+  alert('❌ ' + msg);
+}
+
+function toggleConnect() {
+  const user = document.getElementById('ttUser').value.trim().replace('@','');
+  const btn  = document.getElementById('conn-btn');
+  if (!connected) {
+    if (!user) { alert('Enter TikTok username!'); return; }
+    btn.textContent = '⏳ CONNECTING…'; btn.disabled = true;
+    try {
+      ws = new WebSocket('ws://localhost:8080');
+      ws.onopen = () => {
+        ws.send(JSON.stringify({ action: 'connect', username: user }));
+        connected = true;
+        btn.textContent = '■ DISCONNECT'; btn.classList.add('on'); btn.disabled = false;
+        document.getElementById('ndot').classList.add('on');
+        document.getElementById('net-txt').textContent = '@' + user;
+        document.getElementById('live-pill').classList.add('on');
+      };
+      ws.onmessage = e => {
+        try {
+          const d = JSON.parse(e.data);
+          if (d.type === 'gift') {
+            const r = d.repeat || 1;
+            if (d.giftId == GIFT_BOY_ADD)   applyAdd('boy',  2 * r, d.user || 'viewer');
+            if (d.giftId == GIFT_GIRL_ADD)  applyAdd('girl', 2 * r, d.user || 'viewer');
+            if (d.giftId == GIFT_SAB_GIRLS) applySab('girl', 5 * r, d.user || 'viewer');
+            if (d.giftId == GIFT_SAB_BOYS)  applySab('boy',  5 * r, d.user || 'viewer');
+          } else if (d.type === 'chat') {
+            const t = parseChatTeam(d.msg || '');
+            if (t) applyAdd(t, 0.5, d.user || 'viewer');
+          } else if (d.type === 'viewer') {
+            totalViewers = d.count || totalViewers;
+            document.getElementById('sv').textContent = totalViewers;
+          }
+        } catch(err) {}
+      };
+      ws.onerror  = () => showConnErr('Bridge not found on ws://localhost:8080');
+      ws.onclose  = () => { if (connected) showConnErr('Bridge disconnected!'); };
+    } catch(e) { showConnErr('WebSocket failed: ' + e.message); }
+  } else {
+    connected = false;
+    btn.textContent = '▶ GO LIVE'; btn.classList.remove('on'); btn.disabled = false;
+    document.getElementById('ndot').classList.remove('on');
+    document.getElementById('net-txt').textContent = 'OFFLINE';
+    document.getElementById('live-pill').classList.remove('on');
+    if (ws) { try { ws.close(); } catch(e){} ws = null; }
+  }
+}
+
+window.addEventListener('resize', () => { syncCamera('boy'); syncCamera('girl'); });
+window.addEventListener('load',   () => { document.getElementById('gv').textContent = GOAL; });
+</script>
+</body>
+</html>
