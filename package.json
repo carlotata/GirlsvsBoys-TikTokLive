@@ -1,6 +1,14 @@
 {
-  "dependencies": {
-    "tiktok-live-connector": "^2.1.1-beta1",
-    "ws": "^8.20.0"
-  }
+   "dependencies": {
+      "tailwindcss": "^4.2.2",
+      "tiktok-live-connector": "^2.1.1-beta1",
+      "ws": "^8.20.0"
+   },
+   "devDependencies": {
+      "@tailwindcss/cli": "^4.2.2"
+   },
+   "scripts": {
+      "dev": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch",
+      "build": "tailwindcss -i ./src/input.css -o ./dist/output.css"
+   }
 }
